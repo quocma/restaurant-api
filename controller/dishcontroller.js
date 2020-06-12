@@ -104,6 +104,40 @@ module.exports = {
             
         }
     },
+    /**
+     *@description      This fuction get dishs with filter condition(all, dinner, lunch, ..etc).
+                        return page from query string ?page=x&npp(number per page)=y,
+                        If it don't passed return all.
+     */
+    getDishByFilter: async(req, res, next) => {
+        if(req.params.filter) {
+            var filter = req.params.filter
+            var filterRegex = new RegExp(filter)
+            var resultOfFilter = []
+            try {
+                if (filter == 'all') {
+                    resultOfFilter = await dishModel.find({ })
+                } else {
+                    resultOfFilter = await dishModel.find({tag: filterRegex })
+                }
+               
+                if(req.query && req.query.page && req.query.npp) {
+                    let page = req.query.page
+                    let perPage = req.query.npp
+                    resultOfFilter = resultOfFilter.slice((page*perPage) - perPage, page*perPage )
+                    
+                }
+                res.status(200).json({
+                    result: resultOfFilter,
+                    message: 'Successful !!!'
+                })
+            } catch (error) {
+                console.log("Filter dish fail !")
+                res.status(404).json({message: 'Filter dish fail !'})
+            }
+            
+        }
+    },
 
     createDish: (req, res, next) => {
         var dishObject = new dishModel ({

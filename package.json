@@ -15,6 +15,7 @@
     "nodemon": "^2.0.4"
   },
   "devDependencies": {
+    "mocha": "^8.0.1",
     "morgan": "^1.10.0"
   }
 }

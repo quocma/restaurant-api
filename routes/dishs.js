@@ -16,7 +16,8 @@ router.route('/:id')
 router.route('/related/:tags')
     .get(dishcontroller.getRalatedByTag)
 
-
+router.route('/menu/:filter')
+    .get(dishcontroller.getDishByFilter)
 
  
 
