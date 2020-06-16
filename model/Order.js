@@ -16,11 +16,21 @@ const orderSchema = {
         type: String,
         default: 'A'
     },
-    order_items: {
-        type: Array,
-        required: true,
-        default: undefined
-    }
+    order_items: [
+        {
+            type: Object,
+            required: true,
+            default: undefined,
+            dish_id: {
+                type: mongoose.ObjectId,
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
+            }
+        }
+    ]
     ,
     custom_info: {
         name: {
@@ -31,8 +41,8 @@ const orderSchema = {
             type: String,
             required: true
         },
-        Phone: {
-            type: Number,
+        phone: {
+            type: String,
             required: true
         },
         addr: {
