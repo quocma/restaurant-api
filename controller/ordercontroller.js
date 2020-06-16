@@ -1,8 +1,11 @@
 const Order = require('../model/Order');
-
+const mongoose = require('mongoose')
 
 const createFunc = async (req, res, next) => {
     try {
+        req.body.order_items.forEach(item => {
+            item.dish_id = mongoose.Types.ObjectId(item.dish_id)
+        });
         let orderOjb =  new Order({
             amount: req.body.amount,
             delivery_charge: req.body.delivery_charge,
@@ -11,8 +14,8 @@ const createFunc = async (req, res, next) => {
             custom_info: {
                 name: req.body.custom_info.name,
                 mail: req.body.custom_info.mail,
-                Phone: req.body.custom_info.phone,
-                addr: req.body.custom_info.phone,
+                phone: req.body.custom_info.phone,
+                addr: req.body.custom_info.addr,
                 note: req.body.custom_info.note
             }
         })
@@ -47,7 +50,49 @@ const getFunc = async (req, res, next) => {
 }
 const getSpecFunc = async (req, res, next) => {
     try {
-        const result = await Order.find({ _id : req.params.id})
+        console.log(req.params.id)
+        const result = await Order.aggregate() 
+                                    .match({_id: mongoose.Types.ObjectId(req.params.id)})
+                                    .unwind("$order_items")
+                                    .lookup({
+                                        from: 'dishes',
+                                        localField: 'order_items.dish_id',
+                                        foreignField: '_id',
+                                        as: 'orderdetails'
+                                    })
+                                    .unwind("$orderdetails")
+                                    .project({
+                                        id: 1,
+                                        status: 1,
+                                        order_items: {
+                                            quantity: 1,
+                                            orderdetails: "$orderdetails"
+                                        },
+                                        delivery_charge: 1,
+                                        tax: 1,
+                                        custom_info: 1,
+                                        created:1,
+                                        updated: 1
+                                    })
+                                    .group({
+                                        _id: "$_id",
+                                        order_info: {
+                                            $mergeObjects : {status: "$status",
+                                            delivery_charge:"$delivery_charge",
+                                            tax: "$tax",
+                                            custom_info: "$custom_info",
+                                            created: "$created",
+                                            updated: "$updated"
+                                            }
+                                        },
+                                        order_items: {
+                                            $push: {quantity: "$order_items.quantity",
+                                                item: "$order_items.orderdetails"
+                                            
+                                            }
+                                        }
+                                    })
+                              
         return res.status(200).json({
             total: result.length,
             message: "success",

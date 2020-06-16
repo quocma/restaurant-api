@@ -3,7 +3,8 @@ const express   = require('express')
 const path      = require('path')
 const bodyPaser = require('body-parser')
 const logger    = require('morgan')
-const dishRoute = require('./routes/dishs')
+const dishRouter = require('./routes/dishs')
+const orderRouter = require('./routes/orders')
 const MongoClient  = require('mongoose')
 
 
@@ -35,7 +36,8 @@ MongoClient.connect('mongodb+srv://quocma:q6v%26FVVpCPFCS%2As@cluster0-tzkjb.mon
 app.use(logger('dev'));
 
 // Routes
-app.use('/dish', dishRoute)
+app.use('/dish', dishRouter)
+app.use('/order', orderRouter)
 
 
 // Error handle 
