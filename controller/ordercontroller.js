@@ -50,7 +50,6 @@ const getFunc = async (req, res, next) => {
 }
 const getSpecFunc = async (req, res, next) => {
     try {
-        console.log(req.params.id)
         const result = await Order.aggregate() 
                                     .match({_id: mongoose.Types.ObjectId(req.params.id)})
                                     .unwind("$order_items")

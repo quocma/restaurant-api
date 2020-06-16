@@ -6,18 +6,20 @@ const logger    = require('morgan')
 const dishRouter = require('./routes/dishs')
 const orderRouter = require('./routes/orders')
 const MongoClient  = require('mongoose')
-
+const cors  = require('cors')
 
 
 // init express 
 const app = express()
+// cors 
+app.use(cors())
 // parse application/x-www-form-urlendcode
 app.use(bodyPaser.urlencoded({extended: false}))
-
 // parse Json 
 app.use(bodyPaser.json({
     // option for json req here!
 }));
+
 
 // connect mongodb from mongoose 
 MongoClient.connect('mongodb+srv://quocma:q6v%26FVVpCPFCS%2As@cluster0-tzkjb.mongodb.net/luxuryrestaurant?retryWrites=true&w=majority',{

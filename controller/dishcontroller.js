@@ -10,6 +10,7 @@ module.exports = {
            })
        })
        .catch( e => {
+        console.log('error')
             console.log(e);
             next(e);
        })
@@ -51,7 +52,7 @@ module.exports = {
         .then(result => {
             const menuItems = result;
             // find top 2 product have biggest discount
-            dishModel.find({discount : {$gt : 0}}).select({name: 1, price: 1}).sort({ discount: 'asc'}).limit(2)
+            dishModel.find({discount : {$gt : 0}}).select({name: 1, price: 1, short_desc: 1, img:1}).sort({ discount: 'asc'}).limit(2)
             .then(result => {
                 const todayItems = result;
                 res.json({
