@@ -116,10 +116,13 @@ module.exports = {
             var filterRegex = new RegExp(filter)
             var resultOfFilter = []
             try {
+                let totalcount = 0;
                 if (filter == 'all') {
                     resultOfFilter = await dishModel.find({ })
+                    totalcount = resultOfFilter.length
                 } else {
                     resultOfFilter = await dishModel.find({tag: filterRegex })
+                    totalcount = resultOfFilter.length
                 }
                
                 if(req.query && req.query.page && req.query.npp) {
@@ -129,6 +132,7 @@ module.exports = {
                     
                 }
                 res.status(200).json({
+                    totalOftag : totalcount,
                     result: resultOfFilter,
                     message: 'Successful !!!'
                 })
