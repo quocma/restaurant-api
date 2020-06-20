@@ -5,6 +5,7 @@ const bodyPaser = require('body-parser')
 const logger    = require('morgan')
 const dishRouter = require('./routes/dishs')
 const orderRouter = require('./routes/orders')
+const bookingRouter = require('./routes/bookings')
 const MongoClient  = require('mongoose')
 const cors  = require('cors')
 
@@ -40,6 +41,7 @@ app.use(logger('dev'));
 // Routes
 app.use('/dish', dishRouter)
 app.use('/order', orderRouter)
+app.use('/booking', bookingRouter)
 
 
 // Error handle 
