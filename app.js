@@ -40,6 +40,7 @@ MongoClient.connect('mongodb+srv://quocma:q6v%26FVVpCPFCS%2As@cluster0-tzkjb.mon
 app.use(logger('dev'));
 
 // Routes
+app.get('/favicon.ico', (req, res) => res.status(204));
 app.use('/dish', dishRouter)
 app.use('/order', orderRouter)
 app.use('/booking', bookingRouter)
@@ -48,20 +49,19 @@ app.use('/subcribe', subcribeRouter)
 
 // Error handle 
 app.use((req, res, next) => {
-    const err = new Error('Not Found')
+ 
+    const err =  new Error('Not Found')
     err.status = 404
     next(err)
 }) 
 
 // Error handle
-app.use((req, res, nex) => {
-    const error = err || {}
-    const status = err.status || 500
+app.use((error, req, res, next) => {
+    const status = error.status || 500
     return res.status(status).json({
-            error : {
-                message  : error
-            }
-        })
+        status   : error.status,
+        error   : error.message
+    })
     
 })
 
