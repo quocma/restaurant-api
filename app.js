@@ -6,6 +6,7 @@ const logger    = require('morgan')
 const dishRouter = require('./routes/dishs')
 const orderRouter = require('./routes/orders')
 const bookingRouter = require('./routes/bookings')
+const subcribeRouter = require('./routes/subcribe')
 const MongoClient  = require('mongoose')
 const cors  = require('cors')
 
@@ -42,6 +43,7 @@ app.use(logger('dev'));
 app.use('/dish', dishRouter)
 app.use('/order', orderRouter)
 app.use('/booking', bookingRouter)
+app.use('/subcribe', subcribeRouter)
 
 
 // Error handle 
