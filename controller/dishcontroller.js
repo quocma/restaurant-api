@@ -1,7 +1,31 @@
 const dishModel  = require('../model/Dish');
 // const { json } = require('body-parser');
-
 module.exports = {
+    createDish: (req, res, next) => {
+        var dishObject = new dishModel ({
+            name: req.body.name,
+            price: req.body.price,
+            oldprice: req.body.oldprice,
+            discount: req.body.discount,
+            img: req.body.img,
+            tag: req.body.tags,
+            short_desc: req.body.short_desc,
+            long_desc: req.body.long_desc
+        })
+        dishObject.save()
+            .then( doc => {
+               res.status(201).json( {
+                   message: 'created',
+                   result : doc
+               })
+            })
+            .catch( e => {
+                res.status(404).json( {
+                    message: 'create fail!',
+                    error : e
+                })
+            })
+    },
     getAll : (req, res, next) => {
        dishModel.find({}).select('-long_desc')
        .then( result => {
@@ -84,19 +108,19 @@ module.exports = {
             let tagRegex2 = new RegExp(tagsArr.join('|'));
             if(count) {
                 // get exactly count of relateddish 
-                var relatedDish = await dishModel.find().where({tag: tagRegex1}).limit(count)
+                var relatedDish = await dishModel.find().where({tag: tagRegex1}).limit(count).select('-long_desc')
                 if(relatedDish.length < 4) {
                     // if dont enough count serch with regrex 2;
-                    let moreRelated = await dishModel.find().where({tag: tagRegex2}).limit(count - relatedDish.length);
+                    let moreRelated = await dishModel.find().where({tag: tagRegex2}).limit(count - relatedDish.length).select('-long_desc')
                     relatedDish =  relatedDish.concat(moreRelated)
                 }
                 res.send(relatedDish);
             } else {
                 // get default 4dish related
-                var relatedDish = await dishModel.find().where({tag: tagRegex1}).limit(4)
+                var relatedDish = await dishModel.find().where({tag: tagRegex1}).limit(4).select('-long_desc')
                 if(relatedDish.length < 4) {
                     // if dont enough count serch with regrex 2;
-                    let moreRelated = await dishModel.find().where({tag: tagRegex2}).limit(4 - relatedDish.length);
+                    let moreRelated = await dishModel.find().where({tag: tagRegex2}).limit(4 - relatedDish.length).select('-long_desc')
                     relatedDish =  relatedDish.concat(moreRelated)
                 }
                 res.send(relatedDish);
@@ -118,10 +142,10 @@ module.exports = {
             try {
                 let totalcount = 0;
                 if (filter == 'all') {
-                    resultOfFilter = await dishModel.find({ })
+                    resultOfFilter = await dishModel.find({ }).select('-long_desc')
                     totalcount = resultOfFilter.length
                 } else {
-                    resultOfFilter = await dishModel.find({tag: filterRegex })
+                    resultOfFilter = await dishModel.find({tag: filterRegex }).select('-long_desc')
                     totalcount = resultOfFilter.length
                 }
                
@@ -144,25 +168,5 @@ module.exports = {
         }
     },
 
-    createDish: (req, res, next) => {
-        var dishObject = new dishModel ({
-            name: 'bo` bit  tet',
-            price: 50000,
-            oldprice: 70000,
-            discount: 10,
-            img: 'abv',
-            tag: 'soup, lunch',
-            short_desc: 'short asdfkjhaskdf',
-            long_desc: 'long'
-        })
-        dishObject.save()
-            .then( doc => {
-                console.log('created from Dish model' + doc);
-                res.status(200)
-                res.send(doc)
-            })
-            .catch( e => {
-                console.log(e);
-            })
-    }
+    
 }
