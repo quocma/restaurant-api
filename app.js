@@ -66,7 +66,6 @@ app.use((req, res, nex) => {
 })
 
 
-const port = 3003
-app.listen(port, () => {
+app.listen(process.env.port || 3003, () => {
     console.log(`Server running on port: ${port}`);
 })
