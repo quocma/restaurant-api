@@ -20,6 +20,7 @@ app.use(bodyPaser.urlencoded({extended: false}))
 // parse Json 
 app.use(bodyPaser.json({
     // option for json req here!
+    // limit : '10mb'
 }));
 
 

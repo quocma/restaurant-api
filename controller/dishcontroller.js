@@ -1,17 +1,20 @@
 const dishModel  = require('../model/Dish');
-// const { json } = require('body-parser');
+const fs = require('fs')
+
+
 module.exports = {
-    createDish: (req, res, next) => {
+    createDish: async(req, res, next) => {   
         var dishObject = new dishModel ({
             name: req.body.name,
             price: req.body.price,
-            oldprice: req.body.oldprice,
-            discount: req.body.discount,
-            img: req.body.img,
+            oldprice: req.body.oldprice || 0,
+            discount: req.body.discount || 0,
+            img: req.body.filename,
             tag: req.body.tags,
             short_desc: req.body.short_desc,
-            long_desc: req.body.long_desc
+            long_desc: req.body.long_desc || ''
         })
+        console.log(req.body);
         dishObject.save()
             .then( doc => {
                res.status(201).json( {
