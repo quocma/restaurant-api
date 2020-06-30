@@ -9,7 +9,12 @@ var dishSchema =  new schema ({
     img: String,
     tag: String,
     short_desc: String,
-    long_desc: String
+    long_desc: String,
+    created: {
+        type: Date,
+        default: Date.now
+    },
+    updated: Date
 })
 
 const dishModel = mongoose.model('Dish', dishSchema);
