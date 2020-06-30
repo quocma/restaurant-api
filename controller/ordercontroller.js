@@ -63,12 +63,12 @@ const getSpecFunc = async (req, res, next) => {
                                     .project({
                                         id: 1,
                                         status: 1,
+                                        amount: 1,
                                         order_items: {
                                             quantity: 1,
                                             orderdetails: "$orderdetails"
                                         },
                                         delivery_charge: 1,
-                                        tax: 1,
                                         custom_info: 1,
                                         created:1,
                                         updated: 1
@@ -76,16 +76,18 @@ const getSpecFunc = async (req, res, next) => {
                                     .group({
                                         _id: "$_id",
                                         order_info: {
-                                            $mergeObjects : {status: "$status",
+                                            $mergeObjects : {
+                                            status: "$status",
                                             delivery_charge:"$delivery_charge",
-                                            tax: "$tax",
+                                            amount: '$amount',
                                             custom_info: "$custom_info",
                                             created: "$created",
                                             updated: "$updated"
                                             }
                                         },
                                         order_items: {
-                                            $push: {quantity: "$order_items.quantity",
+                                            $push: {
+                                                quantity: "$order_items.quantity",
                                                 item: "$order_items.orderdetails"
                                             
                                             }
