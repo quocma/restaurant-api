@@ -1,5 +1,6 @@
 const dishModel  = require('../model/Dish');
-const fs = require('fs')
+const fs = require('fs');
+const { isArray } = require('util');
 
 
 module.exports = {
@@ -170,5 +171,68 @@ module.exports = {
         }
     },
 
+    updateDish: async(req, res, next) => {   
+        try {
+            if(req.file) {
+                req.body.img = 'upload/' + req.file.filename;
+            }
+            const dataUpdate = req.body;
+            const time = Date.now()
+            const fieldToUpdate = {
+                updated : time
+            };
+            // FLATTEN dataupdate
+           /*   Nested
+                input: {
+                    key1 : value 1,
+                    key2: {
+                        subkey1: subvalue1,
+                        subkey2: subvalue2,
+                    }
+                }
+                output: {
+                    key1: subvalue1,
+                    key2.subkey1: subvalue1,
+                    key2.subkey2: subvalue2,
+                }
+           */
+            function flattenObject (obj,root) {
+                root = root || '';
+                for(let key in obj) {
+                    if(Object.isExtensible(obj[key]) && !Array.isArray(obj[key])) {
+                        root += `${key}.`
+                        flattenObject(obj[key], root);
+                    } else {
+                        fieldToUpdate[`${root + key}`] = obj[key];
+                    }
+                    
+                }
+            }
+            flattenObject(dataUpdate);
+            const document = await dishModel.updateOne({_id : req.params.id},{$set: fieldToUpdate})
+            return res.status(201).json({
+                message: "updated",
+                document,
+             })
+            
+        } catch (error) {
+            return res.status(404).json({
+                errors: error.errors,
+                message: error.message
+            })
+        }
+    },
+
+    deleteDish: async(req, res, next) => {
+        try {
+            const result =  await dishModel.deleteOne({ _id: req.params.id})
+            res.status(201).json({
+                message: 'deleted',
+                result
+            })
+        } catch (error) {
+            res.status(404).json({error})
+        }
+    }
     
 }

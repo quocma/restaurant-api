@@ -9,7 +9,7 @@ const bookingRouter = require('./routes/bookings')
 const subcribeRouter = require('./routes/subcribe')
 const MongoClient  = require('mongoose')
 const cors  = require('cors')
-const { static } = require('express')
+
 
 
 // init express 

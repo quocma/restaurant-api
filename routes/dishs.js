@@ -29,7 +29,8 @@ router.route('/')
 
 router.route('/:id')
     .get(dishcontroller.getOneById)
-
+    .put(upload.single('thumbnail'), dishcontroller.updateDish)
+    .delete(dishcontroller.deleteDish)
 router.route('/related/:tags')
     .get(dishcontroller.getRalatedByTag)
 
