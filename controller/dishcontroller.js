@@ -9,12 +9,11 @@ module.exports = {
             price: req.body.price,
             oldprice: req.body.oldprice || 0,
             discount: req.body.discount || 0,
-            img: req.body.filename,
+            img: 'upload/' + req.file.filename,
             tag: req.body.tags,
             short_desc: req.body.short_desc,
             long_desc: req.body.long_desc || ''
         })
-        console.log(req.body);
         dishObject.save()
             .then( doc => {
                res.status(201).json( {

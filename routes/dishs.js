@@ -6,15 +6,18 @@ const dishcontroller    = require('../controller/dishcontroller')
 const multer  = require('multer')
 // init upload dir and filename
 const storage = multer.diskStorage({
-    destination: (req, res , cb) => {
-        cb('null', '/uploads')
+    destination: function (req, res , cb) {
+        cb(null, './uploads')
     },
-    filename: (req, file, cb ) => {
-        req.body.filename =  file.fieldname + '-' + Date.now();
-        cb( err => console.log('Multer set file name fail at line 10 - dishscontroller' + err), req.body.filename)
+    filename: function (req, file, cb ) {
+        // get file uploads name
+        let filename = file.originalname.match(/.*(?=.jpg|.png|.jpeg)/);
+        // get extension
+        let extension = file.originalname.match(/\.(jpg|png|jpeg)/)
+        cb( null, filename + '-' + Date.now() + extension[0])
     }
 })
-const upload = multer({storage : storage})
+const upload = multer({storage: storage})
 
 
 router.route('/homepage')
@@ -22,7 +25,7 @@ router.route('/homepage')
 
 router.route('/')
     .get(dishcontroller.getAll)
-    .post(upload.single('img'), dishcontroller.createDish);
+    .post(upload.single('thumbnail'), dishcontroller.createDish);
 
 router.route('/:id')
     .get(dishcontroller.getOneById)

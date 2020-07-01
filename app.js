@@ -9,6 +9,7 @@ const bookingRouter = require('./routes/bookings')
 const subcribeRouter = require('./routes/subcribe')
 const MongoClient  = require('mongoose')
 const cors  = require('cors')
+const { static } = require('express')
 
 
 // init express 
@@ -23,6 +24,8 @@ app.use(bodyPaser.json({
     // limit : '10mb'
 }));
 
+// public upload
+app.use('/upload/', express.static(__dirname + '/uploads'))
 
 // connect mongodb from mongoose 
 MongoClient.connect('mongodb+srv://quocma:q6v%26FVVpCPFCS%2As@cluster0-tzkjb.mongodb.net/luxuryrestaurant?retryWrites=true&w=majority',{
