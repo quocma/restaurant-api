@@ -28,6 +28,10 @@ const booking = new Schema({
     note: {
         type: String
     },
+    confirm: {
+        type: String,
+        default: 'no'
+    },
     created: {
         type: Date,
         default: Date.now
