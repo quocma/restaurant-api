@@ -114,6 +114,7 @@ const updateSpecFunc = async (req, res, next) => {
         const fieldToUpdate = {
             updated : time
         };
+        console.log(req.body);
         // FLATTEN dataupdate
         function flattenObject (obj,root) {
             root = root || '';
@@ -128,7 +129,7 @@ const updateSpecFunc = async (req, res, next) => {
             }
         }
         flattenObject(dataUpdate);
-
+        console.log(dataUpdate);
         const document = await Order.updateOne({_id : req.params.id},{$set: fieldToUpdate})
         return res.status(200).json({
             message: "updated",

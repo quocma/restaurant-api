@@ -14,7 +14,7 @@ const orderSchema = {
     tax: Number,
     status: {
         type: String,
-        default: 'A'
+        default: 'P'
     },
     order_items: [
         {
