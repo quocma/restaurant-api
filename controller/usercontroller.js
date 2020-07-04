@@ -1,5 +1,10 @@
 const userModel = require('../model/User')
 
+const {JWT_SECRET} = require('../config/index')
+const jwt = require('jsonwebtoken')
+
+
+
 const createFunc = async (req, res, next) => {
     try {
        let user = new userModel({
@@ -7,12 +12,18 @@ const createFunc = async (req, res, next) => {
            password: req.body.password,
            role: req.body.role
        })
-       let result =  await user.save();
-       res.status(201).json({
-           total: result.length,
-           message: "OK!",
-           result
-       })
+       const checkExist = await userModel.findOne({username: req.body.username})
+       if (checkExist.length = 1) {
+           res.status(403).json({message: 'Tài khoản đã tồn tại'})
+       } 
+       else {
+            let result =  await user.save();
+            res.status(201).json({
+                total: result.length,
+                message: "OK!",
+                result
+            })
+       }
         
     } catch (error) {
         res.status(404).json({
@@ -24,7 +35,7 @@ const createFunc = async (req, res, next) => {
 const findUserFunc = async (req, res, next) => {
     try {
         const result = await userModel.findOne({username: req.body.username, password: req.body.password})
-        if( result) {
+        if(result) {
             res.status(200).json({
                 auth: true,
                 result
