@@ -21,7 +21,6 @@ const createFunc = async (req, res, next) => {
             res.status(201).json({
                 total: result.length,
                 message: "OK!",
-                result
             })
        }
         
@@ -36,9 +35,20 @@ const findUserFunc = async (req, res, next) => {
     try {
         const result = await userModel.findOne({username: req.body.username, password: req.body.password})
         if(result) {
+
+            let authToken = jwt.sign({
+                            user: result.username,
+                            role: result.role,
+                            iat: Date.now()
+                        },JWT_SECRET ,{issuer : 'luxurybackendsystem' , expiresIn:'1d'})
+            // res.cookie('authToken', authToken, {path: 'localhost:3003/', maxAge: 300000})
+           res.header('Authorization',authToken)
             res.status(200).json({
                 auth: true,
-                result
+                user: {
+                    username: result.username,
+                    role: result.role
+                }
             })
         } 
         else {
