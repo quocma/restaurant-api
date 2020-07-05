@@ -22,7 +22,7 @@ app.use(cors({
     // Access-Control-Allow-Credentials
     //'credentials': true,
     // Access-Control-Allow-Headers -> accept  field authorization from request header.
-   'allowedHeaders' : ['Authorization'],
+   'allowedHeaders' : ['Authorization', 'Content-Type'],
     // Access-Control-Allow-Expose-Headers -> give access to field authorization
     // in response for browser
    'exposedHeaders': ['Authorization']
