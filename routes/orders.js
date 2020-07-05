@@ -8,13 +8,13 @@ const user = require('../permission/users')
 // -- GET ALL ORDER
 // -- POST SUBMIT NEW ORDER
 router.route('/')
-    .get(orderController.getOrder)
+    .get(user.userVerify, user.checkStaffRole, orderController.getOrder)
     .post(orderController.createOrder)
 
 // GET SPECIFICS ORDER
 router.route('/:id')
-    .get(user.userVerify, orderController.getSpecificOrder)
-    // give access for staff, manager, admin
+    .get(user.userVerify, user.checkStaffRole, orderController.getSpecificOrder)
+    // give access for staff,manager, admin
     .patch(user.userVerify, user.checkStaffRole, orderController.updateSpecificOrder)
     .delete(user.userVerify, user.checkAdminRole,orderController.deleteSpecificOrder)
 
