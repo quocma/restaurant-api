@@ -2,6 +2,8 @@ const express   = require('express')
 const router    = express.Router()
 const dishcontroller    = require('../controller/dishcontroller')
 
+const user = require ('../permission/users')
+
 // setup multer
 const multer  = require('multer')
 // init upload dir and filename
@@ -25,12 +27,15 @@ router.route('/homepage')
 
 router.route('/')
     .get(dishcontroller.getAll)
-    .post(upload.single('thumbnail'), dishcontroller.createDish);
+    // only admin access
+    .post(user.userVerify, user.checkAdminRole, upload.single('thumbnail'), dishcontroller.createDish);
 
 router.route('/:id')
     .get(dishcontroller.getOneById)
-    .put(upload.single('thumbnail'), dishcontroller.updateDish)
-    .delete(dishcontroller.deleteDish)
+    // role maaneger meaning : both manager and admin can be access
+    .put(user.userVerify, user.checkManagerRole,upload.single('thumbnail'), dishcontroller.updateDish)
+    //only admin
+    .delete(user.userVerify, user.checkAdminRole,dishcontroller.deleteDish)
 router.route('/related/:tags')
     .get(dishcontroller.getRalatedByTag)
 
