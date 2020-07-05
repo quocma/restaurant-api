@@ -5,7 +5,7 @@ const user = require('../permission/users')
 
 
 router.route('/')
-    .get(user.userVerify, user.checkAdminRole, bookingController.getBookingItem)
+    .get(user.userVerify, user.checkStaffRole, bookingController.getBookingItem)
     .post(bookingController.createOne)
    
 
