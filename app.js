@@ -20,13 +20,18 @@ app.use(cors({
     // accept req method
     // 'methods': 'GET,POST,PUT,PATCH,DELETE,HEAD',
     // Access-Control-Allow-Credentials
-   //'credentials': true,
-   // Access-Control-Allow-Headers
-   'allowedHeaders' : ['Authorization', 'Content-Type'],
-   // Access-Control-Allow-Expose-Headers
-   'exposedHeaders': ['Authorization', 'X-Powered-By']
+    //'credentials': true,
+    // Access-Control-Allow-Headers -> accept  field authorization from request header.
+   'allowedHeaders' : ['Authorization'],
+    // Access-Control-Allow-Expose-Headers -> give access to field authorization
+    // in response for browser
+   'exposedHeaders': ['Authorization']
 
 }))
+app.use( (req, res, next)  => {
+    res.removeHeader('X-Powered-By')
+    next()
+})
 // parse application/x-www-form-urlendcode
 app.use(bodyPaser.urlencoded({extended: false}))
 // parse Json 

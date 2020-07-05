@@ -12,8 +12,8 @@ const createFunc = async (req, res, next) => {
            password: req.body.password,
            role: req.body.role
        })
-       const checkExist = await userModel.findOne({username: req.body.username})
-       if (checkExist.length = 1) {
+       const userExist = await userModel.findOne({username: req.body.username})
+       if (userExist) {
            res.status(403).json({message: 'Tài khoản đã tồn tại'})
        } 
        else {
@@ -26,8 +26,8 @@ const createFunc = async (req, res, next) => {
         
     } catch (error) {
         res.status(404).json({
-            message: 'user: Create fail',
-            error
+            message: 'User Create fail',
+            error : error.message
         });
     }
 }
