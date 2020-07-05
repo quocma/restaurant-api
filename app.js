@@ -16,7 +16,17 @@ const cors  = require('cors')
 // init express 
 const app = express()
 // cors 
-app.use(cors())
+app.use(cors({ 
+    // accept req method
+    // 'methods': 'GET,POST,PUT,PATCH,DELETE,HEAD',
+    // Access-Control-Allow-Credentials
+   //'credentials': true,
+   // Access-Control-Allow-Headers
+   'allowedHeaders' : ['Authorization', 'Content-Type'],
+   // Access-Control-Allow-Expose-Headers
+   'exposedHeaders': ['Authorization', 'X-Powered-By']
+
+}))
 // parse application/x-www-form-urlendcode
 app.use(bodyPaser.urlencoded({extended: false}))
 // parse Json 

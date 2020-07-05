@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const userModel = require('../model/User')
 
 async function userVerify (req, res, next) {
-    if(req.headers.authorization) {
+    try {
         // get auth token
         let authToken = req.headers.authorization;
         // verify user
@@ -22,7 +22,7 @@ async function userVerify (req, res, next) {
             res.status(401).json({message: 'Unauthorized!'})
         }
     }
-    else {
+    catch (err) {
         res.status(403).json({message: 'Forbidden'})
     }
 }

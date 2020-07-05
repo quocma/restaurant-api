@@ -40,8 +40,9 @@ const findUserFunc = async (req, res, next) => {
                             user: result.username,
                             role: result.role,
                             iat: Date.now()
-                        },JWT_SECRET ,{issuer : 'luxurybackendsystem' , expiresIn:'1d'})
-           res.header('authorization',authToken)
+                        },JWT_SECRET ,{issuer : 'luxurybackendsystem'})
+           res.header('Authorization',authToken)
+           
             res.status(200).json({
                 auth: true,
                 user: {
