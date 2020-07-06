@@ -17,8 +17,10 @@ const cors  = require('cors')
 const app = express()
 // cors 
 app.use(cors({ 
+    //Access=Control-Allow-Origin
+    'origin': "*",
     // accept req method
-    // 'methods': 'GET,POST,PUT,PATCH,DELETE,HEAD',
+    'methods': 'GET,POST,PUT,PATCH,DELETE,HEAD',
     // Access-Control-Allow-Credentials
     //'credentials': true,
     // Access-Control-Allow-Headers -> accept  field authorization from request header.
