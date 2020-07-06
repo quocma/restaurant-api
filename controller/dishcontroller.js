@@ -174,7 +174,7 @@ module.exports = {
     updateDish: async(req, res, next) => {   
         try {
             if(req.file) {
-                req.body.img = 'upload/' + req.file.filename;
+                req.body.img = 'uploads/' + req.file.filename;
             }
             const dataUpdate = req.body;
             const time = Date.now()
