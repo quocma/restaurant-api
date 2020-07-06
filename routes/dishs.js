@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
         let filename = file.originalname.match(/.*(?=.jpg|.png|.jpeg)/);
         // get extension
         let extension = file.originalname.match(/\.(jpg|png|jpeg)/)
-        cb( null, filename + '-' + Date.now() + extension[0])
+        cb( null, filename + '-' + Date.now().toString() + extension[0])
     }
 })
 const upload = multer({storage: storage})
@@ -33,7 +33,7 @@ router.route('/')
 router.route('/:id')
     .get(dishcontroller.getOneById)
     // role maaneger meaning : both manager and admin can be access
-    .put(user.userVerify, user.checkManagerRole,upload.single('thumbnail'), dishcontroller.updateDish)
+    .put(user.userVerify, user.checkManagerRole, upload.single('thumbnail'), dishcontroller.updateDish)
     //only admin
     .delete(user.userVerify, user.checkAdminRole,dishcontroller.deleteDish)
 router.route('/related/:tags')

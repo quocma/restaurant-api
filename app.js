@@ -45,7 +45,7 @@ app.use(bodyPaser.json({
 }));
 
 // public upload
-app.use('/upload/', express.static(__dirname + '/uploads'))
+app.use('/uploads/', express.static(__dirname + '/uploads'))
 
 // connect mongodb from mongoose 
 MongoClient.connect('mongodb+srv://quocma:q6v%26FVVpCPFCS%2As@cluster0-tzkjb.mongodb.net/luxuryrestaurant?retryWrites=true&w=majority',{
