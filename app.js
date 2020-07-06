@@ -17,17 +17,19 @@ const cors  = require('cors')
 const app = express()
 // cors 
 app.use(cors({ 
-    //Access=Control-Allow-Origin
+    // Access=Control-Allow-Origin
     'origin': "*",
     // accept req method
     'methods': 'GET,POST,PUT,PATCH,DELETE,HEAD',
     // Access-Control-Allow-Credentials
     //'credentials': true,
     // Access-Control-Allow-Headers -> accept  field authorization from request header.
-   'allowedHeaders' : ['Authorization', 'Content-Type'],
+    'allowedHeaders' : ['Authorization', 'Content-Type'],
     // Access-Control-Allow-Expose-Headers -> give access to field authorization
     // in response for browser
-   'exposedHeaders': ['Authorization']
+    'exposedHeaders': ['Authorization'],
+    'preflightContinue': false,
+    "optionsSuccessStatus": 204
 
 }))
 app.use( (req, res, next)  => {
