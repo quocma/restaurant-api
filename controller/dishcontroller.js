@@ -1,6 +1,5 @@
-const dishModel  = require('../model/Dish');
-const fs = require('fs');
-const { isArray } = require('util');
+const dishModel  = require('../model/Dish');        // dish moogose model
+const s3Sevice = require('../middleware/aws');      // s3 service
 
 
 module.exports = {
@@ -10,11 +9,12 @@ module.exports = {
             price: req.body.price,
             oldprice: req.body.oldprice || 0,
             discount: req.body.discount || 0,
-            img: 'upload/' + req.file.filename,
+            img: req.file.location,         // req.file.loaction = link access to file uploaded
             tag: req.body.tags,
             short_desc: req.body.short_desc,
             long_desc: req.body.long_desc || ''
         })
+        // res.send({body: req.body, file: req.file, dishObject})
         dishObject.save()
             .then( doc => {
                res.status(201).json( {
@@ -51,14 +51,16 @@ module.exports = {
            if( idRegex.test(id) ){
                 dishModel.findById(req.params.id)
                 .then( result => {
-                    return res.status(200).json({
-                        result,
-                        message: 'Get one dish by Id success full !!!'
-                    })
+                    if (result) {
+                        return res.status(200).json({
+                            result,
+                            message: 'Get one dish by Id success full !!!'
+                        })
+                    }
+                    throw Error('Not Exist !')
                 })
                 .catch( err => {
-                    console.log('dish controller getOneById fail : ' + err);
-                    res.send(err);
+                    res.status(404).send(err.message);
                 })
            } else {
                res.status(403).send('----> id not match type format !!!')
@@ -72,7 +74,7 @@ module.exports = {
 
     /**
      * @description     This controller return 5 dish of menu &
-*                       2 dish have biggest discount which show in homepage
+    *                   2 dish have biggest discount which show in homepage
      */
     getSpecialDish: (req, res, next) => {
         dishModel.find({}).limit(5).select({name: 1, price: 1, short_desc: 1})
@@ -174,7 +176,17 @@ module.exports = {
     updateDish: async(req, res, next) => {   
         try {
             if(req.file) {
-                req.body.img = 'uploads/' + req.file.filename;
+                // has file upload (in particular : image update)
+                req.body.img = req.file.location        // req.file.loaction = link access to file uploaded
+                
+                // after update -> remove old image 
+                const updateTarget = await dishModel.findById(req.params.id).select({img: 1})
+                if (updateTarget) {
+                    s3Sevice.delete(updateTarget.img, err => {throw new Error(err)})
+                }
+                else {
+                    throw Error('Cannot find update item')
+                }
             }
             const dataUpdate = req.body;
             const time = Date.now()
@@ -212,7 +224,9 @@ module.exports = {
             const document = await dishModel.updateOne({_id : req.params.id},{$set: fieldToUpdate})
             return res.status(201).json({
                 message: "updated",
-                document,
+                // file: req.file,
+                // body: req.body,
+                // fieldToUpdate
              })
             
         } catch (error) {
@@ -225,13 +239,18 @@ module.exports = {
 
     deleteDish: async(req, res, next) => {
         try {
-            const result =  await dishModel.deleteOne({ _id: req.params.id})
+            let deleteTarget = await dishModel.findById(req.params.id).select({img: 1})
+            // delete image on s3
+            s3Sevice.delete(deleteTarget.img, err => {throw new Error(err)})
+            // delete on database
+            let result =  await dishModel.deleteOne({ _id: req.params.id})
+            //response
             res.status(201).json({
                 message: 'deleted',
                 result
             })
         } catch (error) {
-            res.status(404).json({error})
+            res.status(404).json({error: error.message})
         }
     }
     
