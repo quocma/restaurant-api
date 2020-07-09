@@ -43,7 +43,7 @@ const getFunc = async (req, res, next) => {
            }
         } else {
             // find all
-            result = await bookingModel.find({});
+            result = await bookingModel.find({}).sort({created : -1});
         }
         res.status(200).json({
             total : result.length,

@@ -34,7 +34,7 @@ const createFunc = async (req, res, next) => {
 }
 const getFunc = async (req, res, next) => {
     try {
-        const result = await Order.find({})
+        const result = await Order.find({}).sort({created : -1})
         return res.status(200).json({
             total: result.length,
             message: "success",
@@ -63,6 +63,7 @@ const getSpecFunc = async (req, res, next) => {
                                     .project({
                                         id: 1,
                                         status: 1,
+                                        amount: 1,
                                         order_items: {
                                             quantity: 1,
                                             orderdetails: "$orderdetails"
@@ -77,6 +78,7 @@ const getSpecFunc = async (req, res, next) => {
                                         order_info: {
                                             $mergeObjects : {
                                             status: "$status",
+                                            amount: "$amount",
                                             delivery_charge:"$delivery_charge",
                                             custom_info: "$custom_info",
                                             created: "$created",
@@ -91,10 +93,8 @@ const getSpecFunc = async (req, res, next) => {
                                             }
                                         }
                                     })
-        result[0].order_info.amount = 0;
-        for (let item of result[0].order_items)  {
-            result[0].order_info.amount += item.quantity * item.item.price;
-        }
+                                    
+        
         return res.status(200).json({
             total: result.length,
             message: "success",
