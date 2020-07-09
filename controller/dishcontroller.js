@@ -1,5 +1,69 @@
 const dishModel  = require('../model/Dish');        // dish moogose model
+const Order  = require('../model/Order');            // order moogose model
 const s3Sevice = require('../middleware/aws');      // s3 service
+const mongoose = require('mongoose');
+
+
+/**
+ * 
+ * @param {ObjectId} itemId id of item have updated.
+ * @description update total payment of order which has item in cart and status of 'P'.
+ */
+async function updateOrderRelateItem (itemId) {
+    // find order relate change
+    let orderRelates = await Order.find({status: 'P', "order_items.dish_id": {$eq: mongoose.Types.ObjectId(itemId)}})
+    for(let order of orderRelates) { 
+        const orderFullDetail = await Order.aggregate() 
+                                    .match({_id: mongoose.Types.ObjectId(order._id)})
+                                    .unwind("$order_items")
+                                    .lookup({
+                                        from: 'dishes',
+                                        localField: 'order_items.dish_id',
+                                        foreignField: '_id',
+                                        as: 'orderdetails'
+                                    })
+                                    .unwind("$orderdetails")
+                                    .project({
+                                        id: 1,
+                                        status: 1,
+                                        order_items: {
+                                            quantity: 1,
+                                            orderdetails: "$orderdetails"
+                                        },
+                                        delivery_charge: 1,
+                                        custom_info: 1,
+                                        created:1,
+                                        updated: 1
+                                    })
+                                    .group({
+                                        _id: "$_id",
+                                        order_info: {
+                                            $mergeObjects : {
+                                            status: "$status",
+                                            delivery_charge:"$delivery_charge",
+                                            custom_info: "$custom_info",
+                                            created: "$created",
+                                            updated: "$updated"
+                                            }
+                                        },
+                                        order_items: {
+                                            $push: {
+                                                quantity: "$order_items.quantity",
+                                                item: "$order_items.orderdetails"
+                                            
+                                            }
+                                        }
+                                    })
+        // recaculate amount
+        let newAmount = 0;
+        for (let item of orderFullDetail[0].order_items)  {
+            newAmount += item.quantity * item.item.price;
+        }
+        // console.log(newAmount)
+        await Order.updateOne({_id : order._id}, {$set: {amount: newAmount}})
+        
+    }
+}
 
 
 module.exports = {
@@ -222,8 +286,13 @@ module.exports = {
             }
             flattenObject(dataUpdate);
             const document = await dishModel.updateOne({_id : req.params.id},{$set: fieldToUpdate})
+            // update related orders
+            if(fieldToUpdate.hasOwnProperty('price')) {
+                updateOrderRelateItem(req.params.id)
+            }
             return res.status(201).json({
                 message: "updated",
+                result: document
                 // file: req.file,
                 // body: req.body,
                 // fieldToUpdate
@@ -252,6 +321,6 @@ module.exports = {
         } catch (error) {
             res.status(404).json({error: error.message})
         }
-    }
+    },
     
 }

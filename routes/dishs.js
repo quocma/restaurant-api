@@ -25,6 +25,10 @@ router.route('/:id')
     .put(user.userVerify, user.checkManagerRole,s3Sevice.upload.single('thumbnail'), dishcontroller.updateDish)
     //only admin
     .delete(user.userVerify, user.checkAdminRole,dishcontroller.deleteDish)
+
+// router.route('/testupdate/:id') 
+//     .put(dishcontroller.updateOrderRelateItem)
+
 router.route('/related/:tags')
     .get(dishcontroller.getRalatedByTag)
 

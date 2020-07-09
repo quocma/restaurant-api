@@ -93,7 +93,6 @@ const getSpecFunc = async (req, res, next) => {
                                     })
         result[0].order_info.amount = 0;
         for (let item of result[0].order_items)  {
-            console.log(item)
             result[0].order_info.amount += item.quantity * item.item.price;
         }
         return res.status(200).json({
@@ -165,7 +164,7 @@ const deleteSpecFunc = async (req, res, next) => {
 
 
 
-// module exportx
+// module export
 module.exports = {
     createOrder: createFunc,
     getOrder: getFunc,
