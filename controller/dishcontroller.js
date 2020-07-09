@@ -313,6 +313,8 @@ module.exports = {
             s3Sevice.delete(deleteTarget.img, err => {throw new Error(err)})
             // delete on database
             let result =  await dishModel.deleteOne({ _id: req.params.id})
+            // update order status of 'P' and has related to item deleted.
+            updateOrderRelateItem(req.params.id)
             //response
             res.status(201).json({
                 message: 'deleted',
