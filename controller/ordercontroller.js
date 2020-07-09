@@ -63,7 +63,6 @@ const getSpecFunc = async (req, res, next) => {
                                     .project({
                                         id: 1,
                                         status: 1,
-                                        amount: 1,
                                         order_items: {
                                             quantity: 1,
                                             orderdetails: "$orderdetails"
@@ -79,7 +78,6 @@ const getSpecFunc = async (req, res, next) => {
                                             $mergeObjects : {
                                             status: "$status",
                                             delivery_charge:"$delivery_charge",
-                                            amount: '$amount',
                                             custom_info: "$custom_info",
                                             created: "$created",
                                             updated: "$updated"
@@ -93,7 +91,11 @@ const getSpecFunc = async (req, res, next) => {
                                             }
                                         }
                                     })
-                              
+        result[0].order_info.amount = 0;
+        for (let item of result[0].order_items)  {
+            console.log(item)
+            result[0].order_info.amount += item.quantity * item.item.price;
+        }
         return res.status(200).json({
             total: result.length,
             message: "success",
