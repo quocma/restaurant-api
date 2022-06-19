@@ -12,6 +12,8 @@ const MongoClient  = require('mongoose')
 const cors  = require('cors')
 
 
+require('dotenv').config();
+
 
 // init express 
 const app = express()
@@ -48,7 +50,7 @@ app.use(bodyPaser.json({
 app.use('/uploads/', express.static(__dirname + '/uploads'))
 
 // connect mongodb from mongoose 
-MongoClient.connect('mongodb+srv://quocma:q6v%26FVVpCPFCS%2As@cluster0-tzkjb.mongodb.net/luxuryrestaurant?retryWrites=true&w=majority',{
+MongoClient.connect(process.env.MONGO_URI,{
     useNewUrlParser: true,
     useUnifiedTopology: true
 })

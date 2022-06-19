@@ -1,6 +1,5 @@
 // Define dependences 
 const aws = require('aws-sdk')                      // aws service
-const credentials = require('./config.json')        // credentials for aws service
 const multer  = require('multer')                   // parse upload form
 const multerS3 = require('multer-s3')               // Streaming multer storage engine for AWS S3.
 
@@ -8,7 +7,7 @@ const multerS3 = require('multer-s3')               // Streaming multer storage 
 // Error: no such file directory
 // aws.config.loadFromPath('./config.json')
 // Instead, ...
-aws.config.update({"accessKeyId": credentials.accessKeyId, "secretAccessKey": credentials.secretAccessKey, "region": credentials.region});
+aws.config.update({"accessKeyId": process.env.accessKeyId, "secretAccessKey": process.env.secretAccessKey, "region": process.env.region});
 
 // init s3 
 const bucket = 'luxury-images'
