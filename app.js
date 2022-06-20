@@ -18,22 +18,7 @@ require('dotenv').config();
 // init express 
 const app = express()
 // cors 
-app.use(cors({ 
-    // Access=Control-Allow-Origin
-    // 'origin': "*",
-    // accept req method
-    // 'methods': 'GET,POST,PUT,PATCH,DELETE,HEAD',
-    // Access-Control-Allow-Credentials
-    //'credentials': true,
-    // Access-Control-Allow-Headers -> accept  field authorization from request header.
-    'allowedHeaders' : ['Authorization', 'Content-Type'],
-    // Access-Control-Allow-Expose-Headers -> give access to field authorization
-    // in response for browser
-    'exposedHeaders': ['Authorization'],
-    // 'preflightContinue': false,
-    // "optionsSuccessStatus": 204
-
-}))
+app.use(cors())
 app.use( (req, res, next)  => {
     res.removeHeader('X-Powered-By')
     next()
