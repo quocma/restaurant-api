@@ -73,7 +73,7 @@ module.exports = {
             price: req.body.price,
             oldprice: req.body.oldprice || 0,
             discount: req.body.discount || 0,
-            img: req.file.location,         // req.file.loaction = link access to file uploaded
+            img: req.file.path,         // req.file.path = link access to file uploaded
             tag: req.body.tags,
             short_desc: req.body.short_desc,
             long_desc: req.body.long_desc || ''
@@ -241,7 +241,7 @@ module.exports = {
         try {
             if(req.file) {
                 // has file upload (in particular : image update)
-                req.body.img = req.file.location        // req.file.loaction = link access to file uploaded
+                req.body.img = req.file.path        // req.file.path = link access to file uploaded
                 
                 // after update -> remove old image 
                 const updateTarget = await dishModel.findById(req.params.id).select({img: 1})

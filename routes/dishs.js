@@ -7,8 +7,8 @@ const dishcontroller    = require('../controller/dishcontroller')
 // user permission 
 const user = require ('../permission/users')
 
-//  s3 service
-const s3Sevice = require('../middleware/aws')
+//  upload parser
+const { uploadParser } = require('../middleware/upload-parse')
 
 
 router.route('/homepage')
@@ -17,12 +17,12 @@ router.route('/homepage')
 router.route('/')
     .get(dishcontroller.getAll)
     // only admin access
-    .post(user.userVerify, user.checkAdminRole, s3Sevice.upload.single('thumbnail'), dishcontroller.createDish);
+    .post(user.userVerify, user.checkAdminRole, uploadParser.single('thumbnail'), dishcontroller.createDish);
 
 router.route('/:id')
     .get(dishcontroller.getOneById)
     // role maaneger meaning : both manager and admin can be access
-    .put(user.userVerify, user.checkManagerRole,s3Sevice.upload.single('thumbnail'), dishcontroller.updateDish)
+    .put(user.userVerify, user.checkManagerRole, uploadParser.single('thumbnail'), dishcontroller.updateDish)
     //only admin
     .delete(user.userVerify, user.checkAdminRole,dishcontroller.deleteDish)
 
